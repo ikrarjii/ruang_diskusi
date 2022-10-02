@@ -8,6 +8,7 @@ class Disscussion extends StatelessWidget {
         primarySwatch: Colors.grey,
       ),
       home: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: const Text("Diskusi"),
           leading: BackButton(
@@ -102,30 +103,22 @@ class Disscussion extends StatelessWidget {
                   const Text("1 Hari yang lalu")
                 ],
               ),
-              Card(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    side: BorderSide(width: 2, color: Colors.black)),
-                color: Colors.white,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
-                        "Dart kita tidak perlu mendefinisikan tipe data variabel secara eksplisit. Ini disebabkan karena Dart juga mendukung type inference, di mana tipe data akan secara otomatis terdeteksi ketika suatu variabel diinisialisasi Balas",
-                        style: TextStyle(fontSize: 20),
-                      )
-                    ],
-                  ),
-                ),
+              const SizedBox(
+                height: 10,
+              ),
+              const TextField(
+                maxLines: 6,
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)))),
               ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextButton(
                       onPressed: () {},
-                      child: Text(
+                      child: const Text(
                         "Balas",
                         style: TextStyle(color: Colors.black),
                       ))
