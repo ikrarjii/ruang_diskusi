@@ -110,7 +110,10 @@ class Disscussion extends StatelessWidget {
                 maxLines: 6,
                 decoration: InputDecoration(
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12)))),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(12),
+                  ),
+                )),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,

@@ -33,6 +33,11 @@ class drawer extends StatelessWidget {
               }));
             }),
           ),
+          ListTile(
+            leading: const Icon(Icons.logout),
+            title: const Text('Keluar'),
+            onTap: (() {}),
+          ),
         ],
       ),
     );
