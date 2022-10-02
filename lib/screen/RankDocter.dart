@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 class Rank extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(  
-        backgroundColor: Colors.grey,
+      theme: ThemeData(
+        primarySwatch: Colors.grey,
+      ),
+      home: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
           title: const Text("Rangking Dokter"),
           leading: BackButton(
@@ -28,6 +31,7 @@ class Rank extends StatelessWidget {
                 height: 10,
               ),
               Card(
+                color: Colors.grey,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(

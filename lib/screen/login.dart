@@ -54,7 +54,7 @@ class _LoginState extends State<Login> {
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: Colors.blueGrey.shade800,
+                primary: Colors.grey,
               ),
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {

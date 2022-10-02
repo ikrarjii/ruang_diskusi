@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class add extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
-       theme: ThemeData(
+      theme: ThemeData(
         primarySwatch: Colors.grey,
       ),
       home: Scaffold(
