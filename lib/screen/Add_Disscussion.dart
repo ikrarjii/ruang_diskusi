@@ -1,9 +1,48 @@
+// ignore: file_names
+// ignore: file_names
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class add extends StatelessWidget {
+class add extends StatefulWidget {
+  @override
+  State<add> createState() => _addState();
+}
+
+// ignore: camel_case_types
+class _addState extends State<add> {
+  // ignore: unused_field
+  late String _title;
+  // ignore: unused_field
+  late String _description;
+  // ignore: unused_field
+  late String _keyword;
+  // ignore: unused_field
+  late String _user;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _initData();
+  }
+
+  _initData() {
+    String uid = FirebaseAuth.instance.currentUser!.uid ?? 'a';
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .get()
+        .then((value) => {
+              setState(() {
+                _user = value['name'];
+              })
+            });
+  }
+
   Widget build(BuildContext context) {
     return MaterialApp(
-       theme: ThemeData(
+      theme: ThemeData(
         primarySwatch: Colors.grey,
       ),
       home: Scaffold(
@@ -30,8 +69,13 @@ class add extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              const TextField(
-                decoration: InputDecoration(
+              TextField(
+                onChanged: (value) {
+                  setState(() {
+                    _title = value;
+                  });
+                },
+                decoration: const InputDecoration(
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12))),
                     labelText: 'Pertanyaan'),
@@ -48,9 +92,14 @@ class add extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              const TextField(
+              TextField(
                 maxLines: 5,
-                decoration: InputDecoration(
+                onChanged: (value) {
+                  setState(() {
+                    _description = value;
+                  });
+                },
+                decoration: const InputDecoration(
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12))),
                     hintText: "Uraian Pertanyaan"),
@@ -78,7 +127,15 @@ class add extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   OutlinedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      FirebaseFirestore.instance.collection('discussions').add({
+                        'title': 'Pertanyaan',
+                        'description': 'Uraian Pertanyaan',
+                        'keyword': 'Kata Kunci',
+                        'created_at': DateTime.now(),
+                        'user': _user
+                      });
+                    },
                     child: const Text(
                       "Buat",
                       style: TextStyle(fontSize: 20, color: Colors.black),

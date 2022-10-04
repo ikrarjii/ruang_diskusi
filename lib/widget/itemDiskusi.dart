@@ -1,11 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:ruang_diskusi/models/Discussion.dart';
 import 'package:ruang_diskusi/screen/Disscussion.dart';
+import 'package:intl/intl.dart';
 
-class ItemDiskusi extends StatelessWidget {
+class ItemDiskusi extends StatefulWidget {
+  final DiscussionModel data;
+
+  const ItemDiskusi({
+    required this.data,
+  });
+
+  @override
+  State<ItemDiskusi> createState() => _ItemDiskusiState();
+}
+
+class _ItemDiskusiState extends State<ItemDiskusi> {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: double.infinity,
       decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
@@ -18,7 +30,7 @@ class ItemDiskusi extends StatelessWidget {
         },
         child: Padding(
           padding: const EdgeInsets.all(25.0),
-          child: ListView(
+          child: Column(
             children: [
               Card(
                 shape: RoundedRectangleBorder(
@@ -31,14 +43,20 @@ class ItemDiskusi extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "17 September 2022",
-                        style: TextStyle(fontSize: 20),
+                      // Text(
+                      //   w,
+                      //   style: TextStyle(fontSize: 20),
+                      // ),
+                      // date
+                      Text(
+                        DateFormat('dd MMMM yyyy')
+                            .format(widget.data.created_at.toDate()),
+                        style: const TextStyle(fontSize: 20),
                       ),
                       const SizedBox(
                         height: 10,
                       ),
-                      const Text("Dok Kepala saya sakit ?",
+                      Text(widget.data.title.toString(),
                           style: TextStyle(fontSize: 30, color: Colors.pink)),
                       const SizedBox(
                         height: 15,
@@ -49,17 +67,17 @@ class ItemDiskusi extends StatelessWidget {
                           Column(
                             children: [
                               Row(
-                                children: const [
-                                  Icon(Icons.account_box_rounded),
-                                  SizedBox(
+                                children: [
+                                  const Icon(Icons.account_box_rounded),
+                                  const SizedBox(
                                     width: 5,
                                   ),
-                                  Text("Budiman")
+                                  Text(widget.data.user)
                                 ],
                               )
                             ],
                           ),
-                          const Text("#Spesialis-Mata")
+                          Text(widget.data.keyword.toString()),
                         ],
                       ),
                       const SizedBox(

@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:ruang_diskusi/models/Discussion.dart';
 
 import 'package:ruang_diskusi/widget/drawer.dart';
 import 'package:ruang_diskusi/widget/itemDiskusi.dart';
@@ -51,7 +53,31 @@ class firstScreen extends StatelessWidget {
           ),
           Flexible(
             flex: 3,
-            child: ItemDiskusi(),
+            child: StreamBuilder<QuerySnapshot<DiscussionModel>>(
+                stream: FirebaseFirestore.instance
+                    .collection('discussions')
+                    .withConverter<DiscussionModel>(
+                        fromFirestore: (snapshots, _) =>
+                            DiscussionModel.fromJson(snapshots.data()),
+                        toFirestore: (discussion, _) => discussion.toJson())
+                    .snapshots(),
+                // .map((event) => event.docs
+                //     .map((e) => DiscussionModel.fromJson(e.data()))
+                //     .toList()),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  // return Text('oke');
+                  return Column(
+                      children: snapshot.data!.docs
+                          .map((e) => ItemDiskusi(
+                                data: e.data(),
+                              ))
+                          .toList());
+                }),
           )
         ],
       ),
