@@ -1,10 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:ruang_diskusi/models/User.dart';
 
 class Rank extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(  
-        backgroundColor: Colors.grey,
+      theme: ThemeData(
+        primarySwatch: Colors.grey,
+      ),
+      home: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
           title: const Text("Rangking Dokter"),
           leading: BackButton(
@@ -27,60 +32,96 @@ class Rank extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Center(
-                            child: Row(
-                              children: const [
-                                Text(
-                                  "#Rangking 1 ",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                )
-                              ],
+              StreamBuilder<QuerySnapshot<UserModel>>(
+                  stream: FirebaseFirestore.instance
+                      .collection('users')
+                      .where('role', isEqualTo: 'dokter')
+                      .withConverter<UserModel>(
+                          fromFirestore: (snapshots, _) =>
+                              UserModel.fromJson(snapshots.data()),
+                          toFirestore: (user, _) => user.toJson())
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    return Column(
+                      children: [
+                        for (var i = 0; i < snapshot.data!.docs.length; i++)
+                          Card(
+                            color: Colors.grey,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Center(
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              "#Rangking ${i + 1} ",
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Container(
+                                        height: 100,
+                                        width: 100,
+                                        decoration: BoxDecoration(
+                                            color: Colors.grey,
+                                            image: DecorationImage(
+                                                fit: BoxFit.cover,
+                                                image: NetworkImage(snapshot
+                                                    .data!.docs[i]
+                                                    .data()
+                                                    .image))),
+                                      )
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      Text(
+                                          "${snapshot.data!.docs[i].data().name}"),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      Text(snapshot.data!.docs[i]
+                                          .data()
+                                          .spesialis),
+                                      Text(snapshot.data!.docs[i].data().RS),
+                                      Text(
+                                          "${snapshot.data!.docs[i].data().point} Point"),
+                                    ],
+                                  )
+                                ],
+                              ),
                             ),
                           ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Container(
-                            height: 100,
-                            width: 100,
-                            color: Colors.amberAccent,
-                          )
-                        ],
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: const [
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Text("Dr.Rahmat Ramadhan"),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Text("Dokter Umum"),
-                          Text("RS Makassar Jaya"),
-                          Text("102 Point"),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              ),
+                      ],
+                    );
+                  }),
             ],
           ),
         ),

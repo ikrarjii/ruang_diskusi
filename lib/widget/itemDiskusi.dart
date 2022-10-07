@@ -25,7 +25,9 @@ class _ItemDiskusiState extends State<ItemDiskusi> {
       child: InkWell(
         onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return Disscussion();
+            return Disscussion(
+              data: widget.data,
+            );
           }));
         },
         child: Padding(

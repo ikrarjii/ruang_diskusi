@@ -1,12 +1,48 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ruang_diskusi/models/Discussion.dart';
+import 'package:ruang_diskusi/screen/login.dart';
 
 import 'package:ruang_diskusi/widget/drawer.dart';
 import 'package:ruang_diskusi/widget/itemDiskusi.dart';
 import 'package:ruang_diskusi/widget/search.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class firstScreen extends StatelessWidget {
+class firstScreen extends StatefulWidget {
+  @override
+  State<firstScreen> createState() => _firstScreenState();
+}
+
+class _firstScreenState extends State<firstScreen> {
+  var _name = '';
+  void initState() {
+    super.initState();
+    _initData();
+    _checkSession();
+  }
+
+  _initData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var uid = FirebaseAuth.instance.currentUser?.uid;
+    FirebaseFirestore.instance.collection('users').doc(uid).get().then((value) {
+      prefs.setString('name', value.data()!['name']);
+      setState(() {
+        _name = value.data()!['name'];
+      });
+    });
+  }
+
+  _checkSession() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String email = prefs.getString('email') ?? '';
+    // print('email : $email');
+    if (email == '' || email == null) {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => Login()));
+    }
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey,
@@ -27,8 +63,8 @@ class firstScreen extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            "Hi, Madhan",
+                          Text(
+                            "Hi, $_name",
                             style: TextStyle(fontSize: 24),
                           ),
                           Container(
@@ -56,6 +92,7 @@ class firstScreen extends StatelessWidget {
             child: StreamBuilder<QuerySnapshot<DiscussionModel>>(
                 stream: FirebaseFirestore.instance
                     .collection('discussions')
+                    .orderBy('created_at', descending: true)
                     .withConverter<DiscussionModel>(
                         fromFirestore: (snapshots, _) =>
                             DiscussionModel.fromJson(snapshots.data()),

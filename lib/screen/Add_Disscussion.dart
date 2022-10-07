@@ -3,6 +3,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ruang_diskusi/screen/FirstScreen.dart';
+import 'package:uuid/uuid.dart';
 
 class add extends StatefulWidget {
   @override
@@ -12,13 +14,13 @@ class add extends StatefulWidget {
 // ignore: camel_case_types
 class _addState extends State<add> {
   // ignore: unused_field
-  late String _title;
+  var _title = '';
   // ignore: unused_field
-  late String _description;
+  var _description = '';
   // ignore: unused_field
-  late String _keyword;
+  var _keyword = '';
   // ignore: unused_field
-  late String _user;
+  var _user = '';
 
   @override
   void initState() {
@@ -28,14 +30,14 @@ class _addState extends State<add> {
   }
 
   _initData() {
-    String uid = FirebaseAuth.instance.currentUser!.uid ?? 'a';
+    String uid = FirebaseAuth.instance.currentUser!.uid;
     FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
         .get()
         .then((value) => {
               setState(() {
-                _user = value['name'];
+                _user = value.data()!['name'];
               })
             });
   }
@@ -112,8 +114,13 @@ class _addState extends State<add> {
               const SizedBox(
                 height: 10,
               ),
-              const TextField(
-                decoration: InputDecoration(
+              TextField(
+                onChanged: (value) {
+                  setState(() {
+                    _keyword = value;
+                  });
+                },
+                decoration: const InputDecoration(
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12))),
                     hintText: "Kata Kunci"),
@@ -128,13 +135,23 @@ class _addState extends State<add> {
                 children: [
                   OutlinedButton(
                     onPressed: () {
-                      FirebaseFirestore.instance.collection('discussions').add({
-                        'title': 'Pertanyaan',
-                        'description': 'Uraian Pertanyaan',
-                        'keyword': 'Kata Kunci',
+                      // random uid with uuid
+                      var uuid = Uuid().v4();
+                      FirebaseFirestore.instance
+                          .collection('discussions')
+                          .doc(uuid)
+                          .set({
+                        'id': uuid,
+                        'title': _title,
+                        'description': _description,
+                        'keyword': _keyword,
                         'created_at': DateTime.now(),
                         'user': _user
                       });
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => firstScreen()));
                     },
                     child: const Text(
                       "Buat",
