@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "87717343493",
+    "project_id": "ruang-diskusi-561f4",
+    "storage_bucket": "ruang-diskusi-561f4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:87717343493:android:b4e00890950d8296e9876c",
+        "android_client_info": {
+          "package_name": "com.example.ruangdiskusi"
+        }
+        
+      },
+      "oauth_client": [
+        {
+          "client_id": "87717343493-un75rrtus1s0opsncauimc0bbjrv9vgc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBanoB-BybxBOXI8vPLAnukyYtgcqNpkT8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "87717343493-un75rrtus1s0opsncauimc0bbjrv9vgc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
