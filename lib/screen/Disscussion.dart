@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -5,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:ruang_diskusi/models/Comment.dart';
 import 'package:ruang_diskusi/models/Discussion.dart';
+import 'package:ruang_diskusi/screen/Detail_commet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
@@ -18,6 +20,7 @@ class Disscussion extends StatefulWidget {
 class _DisscussionState extends State<Disscussion> {
   var _content = "";
   var _comments = [];
+  String _userId = "";
 
   TextEditingController _controller = TextEditingController();
 
@@ -27,6 +30,10 @@ class _DisscussionState extends State<Disscussion> {
   }
 
   _initData() async {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+    setState(() {
+      _userId = uid;
+    });
     FirebaseFirestore.instance
         .collection('discussions')
         .doc(widget.data.id)
@@ -146,42 +153,7 @@ class _DisscussionState extends State<Disscussion> {
                               for (var i = 0;
                                   i < snapshot.data!.docs.length;
                                   i++)
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Column(
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Icon(Icons.circle),
-                                                SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Text(snapshot.data!.docs[i]
-                                                    .data()
-                                                    .user_id
-                                                    .toString()),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                        Text(DateFormat('dd MMMM yyyy').format(
-                                            snapshot.data!.docs[i]
-                                                .data()
-                                                .created_at
-                                                .toDate()))
-                                      ],
-                                    ),
-                                    Text(snapshot.data!.docs[i]
-                                        .data()
-                                        .content
-                                        .toString())
-                                  ],
-                                ),
+                                _discussion(snapshot.data!.docs[i].data(), snapshot.data!.docs[i].id)
                             ],
                           );
                         }),
@@ -222,6 +194,7 @@ class _DisscussionState extends State<Disscussion> {
                                 'content': _content,
                                 'created_at': DateTime.now(),
                               });
+
                               _controller.clear();
                               setState(() {
                                 _content = "";
@@ -237,6 +210,63 @@ class _DisscussionState extends State<Disscussion> {
                 ),
               );
             }),
+      ),
+    );
+  }
+
+  Widget _discussion(snapshot, id) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => DetailComment(
+                    data: snapshot,
+                    id: id,
+                    discussion_id: widget.data.id,
+                    discussion_user_name: widget.data.user
+                    )));
+      },
+      child: Container(
+        margin: EdgeInsets.only(bottom: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.circle),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(snapshot.user_id.toString()),
+                      ],
+                    ),
+                  ],
+                ),
+                if (snapshot.is_the_best)
+                  Icon(
+                    Icons.check,
+                    color: Colors.green,
+                    size: 30,
+                  )
+              ],
+            ),
+            Text(snapshot.content.toString()),
+            SizedBox(
+              height: 5,
+            ),
+            Text(
+              DateFormat('dd MMMM yyyy').format(snapshot.created_at.toDate()),
+              style: TextStyle(color: Colors.grey),
+            )
+          ],
+        ),
       ),
     );
   }

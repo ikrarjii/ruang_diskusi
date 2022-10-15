@@ -1,6 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
 import 'package:ruang_diskusi/screen/FirstScreen.dart';
 import 'package:ruang_diskusi/screen/login.dart';
 
@@ -30,7 +29,7 @@ class _MyAppState extends State<MyApp> {
               return firstScreen();
               // return SettingProfile();
             }
-            return const Center(
+            return const Center( 
               // ignore: prefer_const_constructors
               child: CircularProgressIndicator(),
             );

@@ -109,6 +109,7 @@ class _LoginState extends State<Login> {
                   SharedPreferences prefs =
                       await SharedPreferences.getInstance();
                   prefs.setString('email', _email);
+                  prefs.setString('email', result.uid);
                   // prefs.setString('uid', result.);
                   // ignore: use_build_context_synchronously
                   Navigator.push(

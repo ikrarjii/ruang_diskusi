@@ -30,7 +30,7 @@ class _ItemDiskusiState extends State<ItemDiskusi> {
           }));
         },
         child: Padding(
-          padding: const EdgeInsets.all(25.0),
+          padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
               Card(
@@ -58,7 +58,7 @@ class _ItemDiskusiState extends State<ItemDiskusi> {
                         height: 10,
                       ),
                       Text(widget.data.title.toString(),
-                          style: TextStyle(fontSize: 30, color: Colors.pink)),
+                          style: TextStyle(fontSize: 20, color: Colors.pink)),
                       const SizedBox(
                         height: 15,
                       ),

@@ -36,6 +36,7 @@ class Rank extends StatelessWidget {
                   stream: FirebaseFirestore.instance
                       .collection('users')
                       .where('role', isEqualTo: 'dokter')
+                      .orderBy('point', descending: true)
                       .withConverter<UserModel>(
                           fromFirestore: (snapshots, _) =>
                               UserModel.fromJson(snapshots.data()),
@@ -47,7 +48,7 @@ class Rank extends StatelessWidget {
                         child: CircularProgressIndicator(),
                       );
                     }
-                    return ListView(
+                    return Column(
                       children: [
                         for (var i = 0; i < snapshot.data!.docs.length; i++)
                           Card(

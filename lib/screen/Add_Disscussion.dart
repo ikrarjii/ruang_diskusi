@@ -22,6 +22,8 @@ class _addState extends State<add> {
   // ignore: unused_field
   var _user = '';
 
+  var _userId = '';
+
   @override
   void initState() {
     // TODO: implement initState
@@ -38,6 +40,7 @@ class _addState extends State<add> {
         .then((value) => {
               setState(() {
                 _user = value.data()!['name'];
+                _userId = uid;
               })
             });
   }
@@ -148,6 +151,7 @@ class _addState extends State<add> {
                         'created_at': DateTime.now(),
                         'user': _user
                       });
+
                       Navigator.push(
                           context,
                           MaterialPageRoute(

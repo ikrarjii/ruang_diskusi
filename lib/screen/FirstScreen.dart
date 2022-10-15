@@ -15,6 +15,7 @@ class firstScreen extends StatefulWidget {
 
 class _firstScreenState extends State<firstScreen> {
   var _name = '';
+  var _search = '';
   void initState() {
     super.initState();
     _initData();
@@ -44,6 +45,7 @@ class _firstScreenState extends State<firstScreen> {
 
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.grey,
       appBar: AppBar(
         backgroundColor: Colors.grey,
@@ -52,35 +54,69 @@ class _firstScreenState extends State<firstScreen> {
         children: [
           Flexible(
             child: Container(
-              color: Colors.grey,
+              color: Colors.grey[200],
               child: Padding(
                 padding: const EdgeInsets.all(24.0),
-                child: Expanded(
-                  child: Column(
-                    children: [
-                      Row(
+                child: Column(
+                  children: [
+                    Flexible(
+                      flex: 1,
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             "Hi, $_name",
                             style: TextStyle(fontSize: 24),
                           ),
-                          Container(
-                              decoration: BoxDecoration(
-                                  color: Color.fromARGB(255, 213, 209, 209),
-                                  borderRadius: BorderRadius.circular(12)),
-                              padding: const EdgeInsets.all(10),
-                              child: const Icon(Icons.notifications)),
                         ],
                       ),
-                      const SizedBox(
-                        height: 15,
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Container(
+                      // margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                      child: TextField(
+                        // control
+                        onSubmitted: (value) {
+                          setState(() {
+                            // _search = value;
+                          });
+                        },
+                        onChanged: (value) {
+                          setState(() {
+                            _search = value;
+                          });
+                        },
+                        style:
+                            const TextStyle(height: 0.8, color: Colors.black),
+                        decoration: InputDecoration(
+                          fillColor: Colors.white,
+                          prefixIcon: const Icon(Icons.search),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25.0),
+                            borderSide: BorderSide(
+                              color: Colors.blue,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25.0),
+                            borderSide: BorderSide(
+                              color: Colors.blue,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25.0),
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 2.0,
+                            ),
+                          ),
+                          labelText: 'Mencari...',
+                        ),
                       ),
-                      Expanded(
-                        child: Search(),
-                      )
-                    ],
-                  ),
+                    )
+                  ],
                 ),
               ),
             ),
@@ -108,6 +144,11 @@ class _firstScreenState extends State<firstScreen> {
                   // return Text('oke');
                   return ListView(
                       children: snapshot.data!.docs
+                          .where((element) => element
+                              .data()
+                              .title
+                              .toLowerCase()
+                              .contains(_search.toLowerCase()))
                           .map((e) => ItemDiskusi(
                                 data: e.data(),
                               ))
